@@ -1,0 +1,28 @@
+{
+  "name": "log-err",
+  "version": "1.0.0",
+  "description": "lightweight node module for extensive logging in nodejs. It includes dynamic reconfiguration of the files you want to log without needing to restart your app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prikshittekta/log-err.git"
+  },
+  "keywords": [
+    "nodejs",
+    "logging",
+    "error",
+    "trace",
+    "dynamic",
+    "loading",
+    "db-logging"
+  ],
+  "author": "Vijay Kumar Attri     Prikshit Tekta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prikshittekta/log-err/issues"
+  },
+  "homepage": "https://github.com/prikshittekta/log-err#readme"
+}
