@@ -20,19 +20,35 @@ var _logFile = require('../log-err.js');
 
 // JUST READING THE FILE FOR NOW
 
-exports.log = log;
+exports.trace       = trace;
 
-function log(/* arguments */){
+exports.error       = error;
 
-    var _apiName    =  arguments[0];
+exports.request     = request;
 
-    arguments.splice(0,1);
+exports.response    = response;
 
-    var _logParams  =  arguments;
+exports.query       = query;
+
+function log(level, parameters){
+
+    var _apiName    =  parameters[0];
+
+    parameters.splice(0,1);
+
+    var _logParams  =  parameters;
 
     var _logObject = _logFile[_apiName];
 
     var stream = process.stdout;
+
+    if(parseInt(_logObject[level])){
+
+        printer(stream, _apiName, _logParams);
+
+    }
+
+    /*
 
     if(_logObject.trace){
 
@@ -55,6 +71,38 @@ function log(/* arguments */){
         //LOG RESPONSE HERE
 
     }
+
+    */
+}
+
+function trace(/* arguments */){
+
+    log('trace', arguments);
+
+}
+
+function error(/* arguments */){
+
+    log('error', arguments);
+
+}
+
+function request(/* arguments */){
+
+    log('request', arguments);
+
+}
+
+function response(/* arguments */){
+
+    log('response', arguments);
+
+}
+
+function query(/* arguments */){
+
+    log('query', arguments);
+
 }
 
 function printer(stream, _apiName , _logParams){
@@ -64,4 +112,5 @@ function printer(stream, _apiName , _logParams){
         stream.write(_apiName + ' - ' + JSON.stringify(_logParams[i]) + '\n');
 
         }
+
 }
