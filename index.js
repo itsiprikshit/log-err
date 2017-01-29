@@ -1,7 +1,7 @@
 /*
 
 This file contains the main logging logic.
-Upon installation of this module, a file named _logging.js is created in the root directory.
+Upon installation of this module, a file named log-err.js is created in the root directory.
 API entry points listed there are logged depending upon their enabled logging level.
 
 API logging structure :
@@ -11,14 +11,12 @@ query : 3
 req   : 4,
 res   : 5
 
-The required method calls the log function with the arguments which get logged onto the console according to the
-enabled logging level.
+The desired logging level is called from within the function which get logged onto the console if its
+logging is enabled.
 
  */
 
-var _logFile = require('../log-err.js');
-
-// JUST READING THE FILE FOR NOW
+var fs       = require('fs');
 
 exports.trace       = trace;
 
@@ -35,6 +33,8 @@ function log(level, parameters){
     var _apiName    =  parameters[0];
 
     parameters.splice(0,1);
+
+    var _logFile = require('./log-err.js');
 
     var _logParams  =  parameters;
 
@@ -111,6 +111,35 @@ function printer(stream, _apiName , _logParams){
 
         stream.write(_apiName + ' - ' + JSON.stringify(_logParams[i]) + '\n');
 
-        }
+    }
 
 }
+
+function createFile(){
+    var _counter = 0;
+    var _path    = './log-err.js';
+
+    return function(){
+        if(_counter <= 1){
+            _counter++;
+            fs.open(_path, 'wx', (err, fd) => {
+                if(err){
+                    if(err.code == "EEXIST"){
+                        return;
+                    }
+                    console.log(err.message);
+                }
+
+                fs.close(fd, (err) => {
+                    if(err){
+                        console.log(err.message);
+                    }
+                });
+            });
+        }
+    }
+}
+
+var _createOutputFile = createFile();
+
+_createOutputFile();
