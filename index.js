@@ -30,21 +30,23 @@ exports.query       = query;
 
 function log(level, parameters){
 
-    var _apiName    =  parameters[0];
+    var _loggerObject    =  parameters[0];
 
-    parameters.splice(0,1);
+    var _moduleName      =  _loggerObject.moduleInfo;
+
+    var _apiName         =  _loggerObject.apiInfo;
 
     var _logFile = require('./log-err.js');
 
     var _logParams  =  parameters;
 
-    var _logObject = _logFile[_apiName];
+    var _logObject = _logFile[_moduleName][_apiName];
 
     var stream = process.stdout;
 
     if(parseInt(_logObject[level])){
 
-        printer(stream, _apiName, _logParams);
+        printer(stream, _moduleName, _apiName, _logParams);
 
     }
 
@@ -105,11 +107,11 @@ function query(/* arguments */){
 
 }
 
-function printer(stream, _apiName , _logParams){
+function printer(stream, _moduleName, _apiName, _logParams){
 
     for(var i = 0; i < _logParams.length; i++){
 
-        stream.write(_apiName + ' - ' + JSON.stringify(_logParams[i]) + '\n');
+        stream.write(_moduleName + ' | ' + _apiName + ' | ' + JSON.stringify(_logParams[i]) + '\n');
 
     }
 
