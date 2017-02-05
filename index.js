@@ -1,8 +1,6 @@
 /*
 
 This file contains the main logging logic.
-Upon installation of this module, a file named log-err.js is created in the root directory.
-API entry points listed there are logged depending upon their enabled logging level.
 
 API logging structure :
 trace : 1,
@@ -16,7 +14,9 @@ logging is enabled.
 
  */
 
-var fs       = require('fs');
+var fs              = require('fs');
+
+_path               = "";
 
 exports.trace       = trace;
 
@@ -28,6 +28,9 @@ exports.response    = response;
 
 exports.query       = query;
 
+exports.setPath     = setPath;
+
+
 function log(level, parameters){
 
     var _loggerObject    =  parameters[0];
@@ -36,11 +39,14 @@ function log(level, parameters){
 
     var _apiName         =  _loggerObject.apiInfo;
 
-    var _logFile = require('./log-err.js');
 
-    var _logParams  =  parameters;
+    delete require.cache[require.resolve(_path)];
 
-    var _logObject = _logFile[_moduleName][_apiName];
+    var _logFile         =  require(_path);
+
+    var _logParams       =  parameters;
+
+    var _logObject       = _logFile[_moduleName][_apiName];
 
     var stream = process.stdout;
 
@@ -107,6 +113,17 @@ function query(/* arguments */){
 
 }
 
+function setPath(root, path){
+
+    /*
+        SET GLOBAL PATH VARIABLE
+    */
+    _path = root + '/' + path;
+
+    _createOutputFile();
+
+}
+
 function printer(stream, _moduleName, _apiName, _logParams){
 
     for(var i = 0; i < _logParams.length; i++){
@@ -119,7 +136,6 @@ function printer(stream, _moduleName, _apiName, _logParams){
 
 function createFile(){
     var _counter = 0;
-    var _path    = './log-err.js';
 
     return function(){
         if(_counter <= 1){
@@ -143,5 +159,3 @@ function createFile(){
 }
 
 var _createOutputFile = createFile();
-
-_createOutputFile();
