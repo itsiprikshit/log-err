@@ -16,7 +16,11 @@ logging is enabled.
 
 var fs              = require('fs');
 
+var chokidar        = require('chokidar');
+
 _path               = "";
+
+_logFile            = "";
 
 exports.trace       = trace;
 
@@ -35,52 +39,35 @@ function log(level, parameters){
 
     var _loggerObject    =  parameters[0];
 
-    var _moduleName      =  _loggerObject.moduleInfo;
+    var _moduleInfo      =  _loggerObject.moduleInfo;
 
-    var _apiName         =  _loggerObject.apiInfo;
-
-
-    delete require.cache[require.resolve(_path)];
-
-    var _logFile         =  require(_path);
+    var _apiInfo         =  _loggerObject.apiInfo;
 
     var _logParams       =  parameters;
 
-    var _logObject       = _logFile[_moduleName][_apiName];
+    if(!_logFile[_moduleInfo]){
+
+        console.error("Module Info not defined.");
+
+        return;
+
+    }else if(!_logFile[_moduleInfo][_apiInfo]){
+
+        console.error("Api Info not defined.");
+
+        return;
+
+    }
+
+    var _logObject       = _logFile[_moduleInfo][_apiInfo];
 
     var stream = process.stdout;
 
     if(parseInt(_logObject[level])){
 
-        printer(stream, _moduleName, _apiName, _logParams);
+        printer(stream, _moduleInfo, _apiInfo, _logParams);
 
     }
-
-    /*
-
-    if(_logObject.trace){
-
-        printer(stream, _apiName, _logParams);
-
-    }else if(_logObject.error){
-
-        //LOG ERROR HERE
-
-    }else if(_logObject.query){
-
-        //LOG QUERY HERE
-
-    }else if(_logObject.req){
-
-        //LOG REQUESTS HERE
-
-    }else if(_logObject.res){
-
-        //LOG RESPONSE HERE
-
-    }
-
-    */
 }
 
 function trace(/* arguments */){
@@ -113,22 +100,37 @@ function query(/* arguments */){
 
 }
 
-function setPath(root, path){
+function setPath(path){
 
     /*
-        SET GLOBAL PATH VARIABLE
+        SET GLOBAL PATH VARIABLE AND REQUIRE LOG FILE
     */
-    _path = root + '/' + path;
+
+    _path = path;
+
+    _createOutputFile();
+
+    _logFile        = require(_path);
+
+    var _watcher    = chokidar.watch(_path);
+
+    _watcher.on('change', function(){
+
+        delete require.cache[require.resolve(_path)];
+
+        _logFile         =  require(_path);
+
+    });
 
     _createOutputFile();
 
 }
 
-function printer(stream, _moduleName, _apiName, _logParams){
+function printer(stream, _moduleInfo, _apiInfo, _logParams){
 
     for(var i = 0; i < _logParams.length; i++){
 
-        stream.write(_moduleName + ' | ' + _apiName + ' | ' + JSON.stringify(_logParams[i]) + '\n');
+        stream.write(_moduleInfo + ' | ' + _apiInfo + ' | ' + JSON.stringify(_logParams[i]) + '\n');
 
     }
 
@@ -145,12 +147,12 @@ function createFile(){
                     if(err.code == "EEXIST"){
                         return;
                     }
-                    console.log(err.message);
+                    console.error(err.message);
                 }
 
                 fs.close(fd, (err) => {
                     if(err){
-                        console.log(err.message);
+                        console.error(err.message);
                     }
                 });
             });
