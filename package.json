@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/prikshittekta/log-err/issues"
   },
-  "homepage": "https://github.com/prikshittekta/log-err#readme"
+  "homepage": "https://github.com/prikshittekta/log-err#readme",
+  "dependencies": {
+    "chokidar": "1.7.0"
+  }
 }
