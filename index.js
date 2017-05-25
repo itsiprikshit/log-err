@@ -18,8 +18,6 @@ var fs              = require('fs');
 
 var chokidar        = require('chokidar');
 
-_path               = "";
-
 _logFile            = "";
 
 exports.trace       = trace;
@@ -100,15 +98,13 @@ function query(/* arguments */){
 
 }
 
-function setPath(path){
+function setPath(_path){
 
     /*
         SET GLOBAL PATH VARIABLE AND REQUIRE LOG FILE
     */
 
-    _path = path;
-
-    _createOutputFile();
+    _createOutputFile(_path);
 
     _logFile        = require(_path);
 
@@ -121,8 +117,6 @@ function setPath(path){
         _logFile         =  require(_path);
 
     });
-
-    _createOutputFile();
 
 }
 
@@ -139,7 +133,7 @@ function printer(stream, _moduleInfo, _apiInfo, _logParams){
 function createFile(){
     var _counter = 0;
 
-    return function(){
+    return function(_path){
         if(_counter <= 1){
             _counter++;
             fs.open(_path, 'wx', (err, fd) => {
