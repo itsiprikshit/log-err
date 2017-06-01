@@ -134,13 +134,14 @@ function createFile(){
     var _counter = 0;
 
     return function(_path){
-        if(_counter <= 1){
+        if(!_counter){
             _counter++;
             fs.open(_path, 'wx', (err, fd) => {
                 if(err){
                     if(err.code == "EEXIST"){
                         return;
                     }
+                    _counter--;
                     console.error(err.message);
                 }
 
