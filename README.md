@@ -66,9 +66,6 @@ function sendPostRequest{
     moduleInfo : "externalRequests",
     apiInfo    : "sendPostRequest"
   }
-  /*
-      REST OF THE API WORK GOES HERE
-  */
 }
 ```
 
@@ -115,5 +112,9 @@ logger.query(loggingInfo, object, object, object);
 
 To enable or disable logging just `toggle` the logging level flag according to your need in the logger file for any `module` and `api` info you like.
 
+### Author
+Built with love and passion by - 
+* [Prikshit Tekta](https://github.com/prikshittekta)
+* [Vijay Kumar Attri](https://github.com/decrypto27)
 ### LICENSE
-[MIT]
+Released under [MIT](https://github.com/prikshittekta/log-err/blob/master/LICENSE).

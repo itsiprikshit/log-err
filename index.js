@@ -1,19 +1,3 @@
-/*
-
-This file contains the main logging logic.
-
-API logging structure :
-trace : 1,
-error : 2,
-query : 3
-req   : 4,
-res   : 5
-
-The desired logging level is called from within the function which get logged onto the console if its
-logging is enabled.
-
- */
-
 var fs              = require('fs');
 
 var chokidar        = require('chokidar');
