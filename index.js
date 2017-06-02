@@ -88,18 +88,19 @@ function setPath(_path){
         SET GLOBAL PATH VARIABLE AND REQUIRE LOG FILE
     */
 
-    _createOutputFile(_path);
+    _createOutputFile(_path, function(){
 
-    _logFile        = require(_path);
+        _logFile        = require(_path);
 
-    var _watcher    = chokidar.watch(_path);
+        var _watcher    = chokidar.watch(_path);
 
-    _watcher.on('change', function(){
+        _watcher.on('change', function(){
 
-        delete require.cache[require.resolve(_path)];
+            delete require.cache[require.resolve(_path)];
 
-        _logFile         =  require(_path);
+            _logFile         =  require(_path);
 
+        });
     });
 
 }
@@ -117,13 +118,13 @@ function printer(stream, _moduleInfo, _apiInfo, _logParams){
 function createFile(){
     var _counter = 0;
 
-    return function(_path){
+    return function(_path, cb){
         if(!_counter){
             _counter++;
             fs.open(_path, 'wx', (err, fd) => {
                 if(err){
                     if(err.code == "EEXIST"){
-                        return;
+                        return cb();
                     }
                     _counter--;
                     console.error(err.message);
@@ -133,8 +134,11 @@ function createFile(){
                     if(err){
                         console.error(err.message);
                     }
+                    return cb();
                 });
             });
+        }else{
+            return cb();
         }
     }
 }
