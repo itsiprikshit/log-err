@@ -107,7 +107,7 @@ function setPath(_path){
 
 function printer(stream, _moduleInfo, _apiInfo, _logParams){
 
-    for(var i = 0; i < _logParams.length; i++){
+    for(var i = 1; i < _logParams.length; i++){
 
         stream.write(_moduleInfo + ' | ' + _apiInfo + ' | ' + JSON.stringify(_logParams[i]) + '\n');
 
